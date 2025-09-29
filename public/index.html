@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- The title shown in the browser tab -->
+  <title>Task List Application</title>
+  <!-- Link to external CSS file for styling -->
+  <link href="styles.css" rel="stylesheet" />
+</head>
+<body>
+  <!-- Main header -->
+  <h1>Task List</h1>
+
+  <!-- Input field for typing new tasks -->
+  <input id="taskInput" placeholder="Enter a new task here" />
+  <!-- Button to trigger addTask() from app.js -->
+  <button onclick="addTask()">Add Task</button>
+
+  <!-- Unordered list where tasks will be displayed -->
+  <ul id="taskList"></ul>
+
+  <!-- Link to our external JavaScript file (frontend logic) -->
+  <script src="app.js"></script>
+</body>
+</html>
