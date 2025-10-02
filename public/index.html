@@ -2,24 +2,108 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <!-- The title shown in the browser tab -->
   <title>Task List Application</title>
-  <!-- Link to external CSS file for styling -->
   <link href="styles.css" rel="stylesheet" />
 </head>
 <body>
-  <!-- Main header -->
-  <h1>Task List</h1>
+  <h1>My Task List</h1>
 
-  <!-- Input field for typing new tasks -->
-  <input id="taskInput" placeholder="Enter a new task here" />
-  <!-- Button to trigger addTask() from app.js -->
-  <button onclick="addTask()">Add Task</button>
+  <!-- Button that reveals the form -->
+  <button id="showFormBtn">+ Add New Task</button>
 
-  <!-- Unordered list where tasks will be displayed -->
+  <!-- Hidden form to add or edit task -->
+  <form id="taskForm" style="display: none;">
+    <input type="text" id="taskTitle" placeholder="Task Title" required /> <br>
+    <textarea id="taskDescription" placeholder="Task Description"></textarea> <br>
+    <input type="date" id="taskDueDate" required /> <br>
+    <input type="hidden" id="editIndex" />
+    <button type="submit">Submit Task</button>
+  </form>
+
+  <!-- Where tasks will be displayed -->
   <ul id="taskList"></ul>
 
-  <!-- Link to our external JavaScript file (frontend logic) -->
-  <script src="app.js"></script>
+  <script>
+    // Show the form when the button is clicked
+    document.getElementById('showFormBtn').onclick = () => {
+      document.getElementById('taskForm').style.display = 'block';
+    };
+
+    const form = document.getElementById('taskForm');
+    const titleInput = document.getElementById('taskTitle');
+    const descInput = document.getElementById('taskDescription');
+    const dateInput = document.getElementById('taskDueDate');
+    const editIndex = document.getElementById('editIndex');
+    const taskList = document.getElementById('taskList');
+
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+    function saveTasks() {
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
+    function renderTasks() {
+      taskList.innerHTML = '';
+      tasks.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+      tasks.forEach((task, index) => {
+        const li = document.createElement('li');
+
+        const details = document.createElement('details');
+        const summary = document.createElement('summary');
+        summary.textContent = `${task.title} (Due: ${task.dueDate})`;
+        details.appendChild(summary);
+
+        const desc = document.createElement('p');
+        desc.textContent = task.description;
+        details.appendChild(desc);
+
+        const editBtn = document.createElement('button');
+        editBtn.textContent = 'Edit';
+        editBtn.onclick = () => {
+          titleInput.value = task.title;
+          descInput.value = task.description;
+          dateInput.value = task.dueDate;
+          editIndex.value = index;
+          form.style.display = 'block';
+        };
+
+        const delBtn = document.createElement('button');
+        delBtn.textContent = 'Delete';
+        delBtn.onclick = () => {
+          tasks.splice(index, 1);
+          saveTasks();
+          renderTasks();
+        };
+
+        details.appendChild(editBtn);
+        details.appendChild(delBtn);
+        li.appendChild(details);
+        taskList.appendChild(li);
+      });
+    }
+
+    form.onsubmit = e => {
+      e.preventDefault();
+      const task = {
+        title: titleInput.value,
+        description: descInput.value,
+        dueDate: dateInput.value
+      };
+
+      if (editIndex.value === '') {
+        tasks.push(task);
+      } else {
+        tasks[editIndex.value] = task;
+        editIndex.value = '';
+      }
+
+      saveTasks();
+      renderTasks();
+      form.reset();
+      form.style.display = 'none';
+    };
+
+    renderTasks();
+  </script>
 </body>
 </html>

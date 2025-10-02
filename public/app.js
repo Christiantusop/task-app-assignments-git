@@ -19,13 +19,17 @@ tasks.forEach(t => {  // FIXED: was "task" should be "tasks"
             //once user clicks this would send delete request to server
             await fetch(`/tasks/${t.id}`, { method: 'DELETE'});  // FIXED: use backticks for template literal
             loadTasks(); // reload task after deleting
-        
+         
         };
 // add/append delete button to the task list item   
  li.appendChild(del);
     list.appendChild(li);
   });
 }
+
+//redundant uses way too much code than necessary  (assumed I was communicating with a server, 
+//attempted to use fetch which I dont NamedNodeMap. [a method in java script that allows me to 
+//reach a data center and collect info. it assumed I was asynchronous]
 
 // Function to add a new task
 async function addTask() {
@@ -38,7 +42,7 @@ async function addTask() {
   // Send POST request to server with the task text
   await fetch('/tasks', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ text })
+    headers: { 'Content-Type': 'application/jsonH ' },
+    body: JSON.stringify({ text }) 
   });
 }
